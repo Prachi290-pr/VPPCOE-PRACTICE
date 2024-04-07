@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHATROOM</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+  <div class="navbar">
+    <p>VPPCOE CONNECT</p>
+    <a href="#">Notice Board</a>
+    <a href="#">About Us</a>
+</div>
+
+<div class="container">
+  <div class="wrapper">
+    <h1>Welcome to Vppcoe Connect</h1>
+    <pre id="messages" style="height: 400px; overflow-y: scroll;"></pre>
+    <div id="sendmsg">
+      <input type="text" id="messageBox" placeholder="Type your message here" />
+      <button id="send" <i class="fa fa-paper-plane" aria-hidden="true"></i>
+        </button>
+
+    </div>
+</div>
+
+
+  <script>
+    (function() {
+      const sendBtn = document.querySelector('#send');
+      const messages = document.querySelector('#messages');
+      const messageBox = document.querySelector('#messageBox');
+  
+      let ws;
+  
+      function showMessage(message) {
+        messages.textContent += `\n\n${message}`;
+        messages.scrollTop = messages.scrollHeight;
+        messageBox.value = '';
+      }
+  
+      function init() {
+        if (ws) {
+          ws.onerror = ws.onopen = ws.onclose = null;
+          ws.close();
+        }
+  
+        ws = new WebSocket('ws://localhost:6969');
+        ws.onopen = () => {
+          console.log('Connection opened!');
+        }
+        ws.onmessage = ({ data }) => showMessage(data);
+        ws.onclose = function() {
+          ws = null;
+        }
+      }
+  
+      sendBtn.onclick = function() {
+        if (!ws) {
+          showMessage("No WebSocket connection :(");
+          return ;
+        }
+  
+        ws.send(messageBox.value);
+        showMessage(messageBox.value);
+      }
+  
+      init();
+    })();
+  </script>
+
+  
+</body>
+</html>
+
+
+    
+   
